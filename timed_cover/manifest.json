@@ -1,0 +1,7 @@
+
+{
+  "domain": "timed_cover",
+  "name": "Timed Cover",
+  "codeowners": ["@nickw444"],
+  "version": "0.0.1"
+}
