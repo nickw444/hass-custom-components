@@ -1,0 +1,14 @@
+{
+  "domain": "calibrated_light",
+  "name": "Calibrated Light",
+  "version": "1.0.0",
+  "config_flow": false,
+  "requirements": [],
+  "ssdp": [],
+  "zeroconf": [],
+  "homekit": {},
+  "dependencies": [],
+  "codeowners": [
+    "@nickw444"
+  ]
+}
