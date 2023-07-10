@@ -28,6 +28,7 @@ from homeassistant.core import HomeAssistant, State, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_state_change_event
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
+from homeassistant.helpers.entity_registry import async_get as async_get_entity_registry
 
 DEFAULT_NAME = "Light Switch"
 
@@ -52,7 +53,7 @@ async def async_setup_platform(
 ):
     """Set up entities for calibrated light platform."""
 
-    registry = await hass.helpers.entity_registry.async_get_registry()
+    registry = async_get_entity_registry(hass)
     wrapped_light = registry.async_get(config[CONF_ENTITY_ID])
     unique_id = wrapped_light.unique_id if wrapped_light else None
 
