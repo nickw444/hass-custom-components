@@ -7,7 +7,8 @@ This alternative is a complete re-write from the ground up without an intermedia
 Additionally, the underlying API client supports requesting multiple journeys for a given trip. This allows the component to create `n` sensors for upcoming journeys with only a single API request per trip.
 
 ## Example Configuration
-```
+
+```yaml
 transportnsw:
   api_key: !secret TNSW_API_KEY
   trips:
