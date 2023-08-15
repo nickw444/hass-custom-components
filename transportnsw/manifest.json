@@ -1,0 +1,11 @@
+{
+  "domain": "transportnsw",
+  "name": "Transport NSW",
+  "version": "1.0.0",
+  "documentation": "https://www.home-assistant.io/integrations/transport_nsw",
+  "iot_class": "cloud_polling",
+  "requirements": [
+    "requests>=2.31.0",
+    "gtfs-realtime-bindings>=1.0.0"
+  ]
+}
