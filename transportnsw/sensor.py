@@ -25,13 +25,23 @@ from .transportnsw_client.utils import (
     get_first_nonwalking_leg,
     count_trip_changes,
 )
+import homeassistant.util.dt as dt_util
+
 
 _LOGGER = logging.getLogger(__name__)
+
+ATTR_DEPARTURE_DATE_TIME_ESTIMATED = "departure_date_time_estimated"
+ATTR_DEPARTURE_DATE_TIME_PLANNED = "departure_date_time_planned"
+ATTR_ARRIVAL_DATE_TIME_ESTIMATED = "arrival_date_time_estimated"
+ATTR_ARRIVAL_DATE_TIME_PLANNED = "arrival_date_time_planned"
 
 ATTR_DEPARTURE_TIME_ESTIMATED = "departure_time_estimated"
 ATTR_DEPARTURE_TIME_PLANNED = "departure_time_planned"
 ATTR_ARRIVAL_TIME_ESTIMATED = "arrival_time_estimated"
 ATTR_ARRIVAL_TIME_PLANNED = "arrival_time_planned"
+
+ATTR_TRIP_DURATION_ESTIMATED = "trip_duration_estimated"
+ATTR_TRIP_DURATION_PLANNED = "trip_duration_planned"
 
 ATTR_ORIGIN_STOP_ID = "origin_stop_id"
 ATTR_ORIGIN_NAME = "origin_name"
@@ -253,15 +263,41 @@ class TransportNSWJourneySensor(
 
         ticket = get_ticket(journey.fare.tickets, self._fare_type)
 
+        tz = dt_util.get_time_zone(self.hass.config.time_zone)
+
         return {
             ATTR_ORIGIN_STOP_ID: origin.id,
             ATTR_ORIGIN_NAME: origin.name,
             ATTR_DESTINATION_STOP_ID: destination.id,
             ATTR_DESTINATION_NAME: destination.name,
-            ATTR_DEPARTURE_TIME_ESTIMATED: origin.departureTimeEstimated,
-            ATTR_DEPARTURE_TIME_PLANNED: origin.departureTimePlanned,
-            ATTR_ARRIVAL_TIME_ESTIMATED: destination.arrivalTimeEstimated,
-            ATTR_ARRIVAL_TIME_PLANNED: destination.arrivalTimePlanned,
+            ATTR_DEPARTURE_DATE_TIME_ESTIMATED: origin.departureTimeEstimated,
+            ATTR_DEPARTURE_DATE_TIME_PLANNED: origin.departureTimePlanned,
+            ATTR_ARRIVAL_DATE_TIME_ESTIMATED: destination.arrivalTimeEstimated,
+            ATTR_ARRIVAL_DATE_TIME_PLANNED: destination.arrivalTimePlanned,
+            ATTR_DEPARTURE_TIME_ESTIMATED: origin.departureTimeEstimated.astimezone(
+                tz
+            ).time(),
+            ATTR_DEPARTURE_TIME_PLANNED: origin.departureTimePlanned.astimezone(
+                tz
+            ).time(),
+            ATTR_ARRIVAL_TIME_ESTIMATED: destination.arrivalTimeEstimated.astimezone(
+                tz
+            ).time(),
+            ATTR_ARRIVAL_TIME_PLANNED: destination.arrivalTimePlanned.astimezone(
+                tz
+            ).time(),
+            ATTR_TRIP_DURATION_ESTIMATED: round(
+                (
+                    destination.arrivalTimeEstimated - origin.departureTimeEstimated
+                ).total_seconds()
+                / 60
+            ),
+            ATTR_TRIP_DURATION_PLANNED: round(
+                (
+                    destination.arrivalTimePlanned - origin.departureTimePlanned
+                ).total_seconds()
+                / 60
+            ),
             ATTR_ORIGIN_TRANSPORT_TYPE: origin_leg.transportation.product.klass,
             ATTR_ORIGIN_TRANSPORT_NAME: origin_leg.transportation.product.klass.name,
             ATTR_ORIGIN_LINE_NAME: origin_leg.transportation.number,
